@@ -43,5 +43,30 @@ app.post('/login', (req, res) => {
   res.json({accessToken: accessToken})
 })
 
+//PART. II: create authenticateToken function
+// => this is the middleware route
+function authenticateToken (req, res, next
+  ) {
+  // II.1: GET the token authenticated they sent back to us
+  // II.2: Then => Verifies the token of the user
+  const authHeader = req.headers['authorization']
+  // we only need to get the Token portion-> split the array and get the 2nd portion
+  const token = authHeader && authHeader.split(' ')[1]
+  // conditional check: to see if we have a token or not: if null, return 'undefined'
+  if(token == null) return res.sendStatus(401)
+  
+  // After conditional check, so that we know the user has token, => so we have to verify that token, => How to verify? pass the token and the SECRET_KEY in the environment variable
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    // this takes a callback, 1st check for errors [403] Invalidate Token, No Access
+    if(err) return res.sendStatus(403)
+    // so we know we have Token, so that we can set our user 
+    req.user = user
+    // then => call next()
+    next()
+  })
+  // The Token comes with the Header 'Bearer' from the authHeader above 
+  // => Bearer TOKEN 
+}
+
 // 2. app listen to port: 3000
 app.listen(3000)
