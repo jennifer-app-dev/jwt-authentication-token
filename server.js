@@ -1,6 +1,15 @@
+// render the SECRET_KEY from the environment variables
+require('dotenv').config()
+
 // 1. setup express server
 const express = require('express')
 const app = express()
+
+// 6. Create json web token using the library
+const jwt = require('jsonwebtoken');
+
+// let app use the json from the body get passed in
+app.use(express.json())
 
 // 4. create posts
 const posts = [
@@ -18,6 +27,20 @@ const posts = [
 app.get('/posts', (req, res) => {
   // 3.A: make it return => the post
   res.json(posts)
+})
+
+// 5. create a POST '/login' Route => to create a token
+app.post('/login', (req, res) => {
+  // use this '/login' route => to Authenticate the User
+  // 5.B) you are gonna Authenticate user first. the user has access to our app.
+  const username = req.body.username
+
+  // 5.C.1) step 1. create a user obj
+  const user = {name: username}
+  // 5.C) create a jsonwebtoken very simple
+  // ==> 5.C.2) serialize our user by using 'secret key' from environment variables
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+  res.json({accessToken: accessToken})
 })
 
 // 2. app listen to port: 3000
