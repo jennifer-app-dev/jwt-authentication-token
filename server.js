@@ -24,7 +24,10 @@ const posts = [
 ]
 
 // 3. create a simple route, get all the posts inside the app
-app.get('/posts', (req, res) => {
+app.get('/posts', authenticateToken, (req, res) => {
+  // PART. III: so now we have access to our user => so we can Request our user
+  res.json(posts.filter(post => post.username === req.user.name))
+
   // 3.A: make it return => the post
   res.json(posts)
 })
