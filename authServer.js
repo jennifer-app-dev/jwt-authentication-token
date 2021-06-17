@@ -14,6 +14,7 @@ app.use(express.json())
 // PART. 4: Store the refreshTokens
 let refreshTokens = [];
 
+
 // PART.III: we need to create a new function
 app.post('/token', (req, res) => {
   // 1st, we wanna take in a refreshToken
@@ -27,33 +28,21 @@ app.post('/token', (req, res) => {
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     // first, check the err first
     if(err) return res.sendStatus(403)
-    // so, if statusCode is '403' then send accessToken
+    // so, if statusCode is '403' then send accessToken, pass in the user object
     const accessToken = generateAccessToken({ name: user.name })
-    // 2nd, return the info
+    // 2nd, return the info by sending the response
     res.json({ accessToken: accessToken }) 
   })
 })
 
-// // 4. create posts
-// const posts = [
-//   {
-//     username: "Jane",
-//     title: "Post 1"
-//   },
-//   {
-//     username: "John",
-//     title: "Post 2"
-//   }
-// ]
+// PART. 5: create a delete functional method to log out the user (a.k.a. de-authenticate Function)
+app.delete('/logout', (req, res) => {
+  // PART 5.1: just simply by reset the refreshTokens to be the filtered version refreshTokens
+  refreshTokens = refreshTokens.filter(token => token !== req.body.token) // check 
+  // then send the response status of '204'
+  res.sendStatus(204) // => this means successfully delete the token
+})
 
-// // 3. create a simple route, get all the posts inside the app
-// app.get('/posts', authenticateToken, (req, res) => {
-//   // PART. III: so now we have access to our user => so we can Request our user
-//   res.json(posts.filter(post => post.username === req.user.name))
-
-//   // 3.A: make it return => the post
-//   res.json(posts)
-// })
 
 // 5. create a POST '/login' Route => to create a token
 app.post('/login', (req, res) => {
