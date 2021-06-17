@@ -43,8 +43,13 @@ app.post('/login', (req, res) => {
   // 5.C) create a jsonwebtoken very simple
   // ==> 5.C.2) serialize our user by using 'secret key' from environment variables
   const accessToken = generateAccessToken(user)
+
+  
   // Next, create a fresh token (since the generateAccessToken will expire in 15 secs )
-  res.json({accessToken: accessToken})
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+
+  // Lastly, return the refreshToken to our user.
+  res.json({accessToken: accessToken, refreshToken: refreshToken })
 })
 
 //PART. II: create a function which is to generateAccessToken, named 'generateAccessToken()'
