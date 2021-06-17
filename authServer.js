@@ -32,6 +32,19 @@ app.get('/posts', authenticateToken, (req, res) => {
   res.json(posts)
 })
 
+// 5. create a POST '/login' Route => to create a token
+app.post('/login', (req, res) => {
+  // use this '/login' route => to Authenticate the User
+  // 5.B) you are gonna Authenticate user first. the user has access to our app.
+  const username = req.body.username
+
+  // 5.C.1) step 1. create a user obj
+  const user = {name: username}
+  // 5.C) create a jsonwebtoken very simple
+  // ==> 5.C.2) serialize our user by using 'secret key' from environment variables
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+  res.json({accessToken: accessToken})
+})
 
 //PART. II: create authenticateToken function
 // => this is the middleware route
@@ -58,5 +71,5 @@ function authenticateToken (req, res, next
   // => Bearer TOKEN 
 }
 
-// 2. app listen to port: 3000
-app.listen(3000)
+// 2. app listen to port: 4000
+app.listen(4000)
