@@ -11,26 +11,32 @@ const jwt = require('jsonwebtoken');
 // let app use the json from the body get passed in
 app.use(express.json())
 
-// 4. create posts
-const posts = [
-  {
-    username: "Jane",
-    title: "Post 1"
-  },
-  {
-    username: "John",
-    title: "Post 2"
-  }
-]
-
-// 3. create a simple route, get all the posts inside the app
-app.get('/posts', authenticateToken, (req, res) => {
-  // PART. III: so now we have access to our user => so we can Request our user
-  res.json(posts.filter(post => post.username === req.user.name))
-
-  // 3.A: make it return => the post
-  res.json(posts)
+// PART.III: we need to create a new function
+app.post('/token', (req, res) => {
+  // 1st, we wanna take in a refreshToken
+  const refreshToken = req.body.token
 })
+
+// // 4. create posts
+// const posts = [
+//   {
+//     username: "Jane",
+//     title: "Post 1"
+//   },
+//   {
+//     username: "John",
+//     title: "Post 2"
+//   }
+// ]
+
+// // 3. create a simple route, get all the posts inside the app
+// app.get('/posts', authenticateToken, (req, res) => {
+//   // PART. III: so now we have access to our user => so we can Request our user
+//   res.json(posts.filter(post => post.username === req.user.name))
+
+//   // 3.A: make it return => the post
+//   res.json(posts)
+// })
 
 // 5. create a POST '/login' Route => to create a token
 app.post('/login', (req, res) => {
